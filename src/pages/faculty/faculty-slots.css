@@ -1,0 +1,213 @@
+.faculty-slots-container {
+    margin: 130px 0 0 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.faculty-slots-image-details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.faculty-slots-image {
+    height: 180px;
+    border-radius: 150px;
+}
+
+.faculty-slots-details div:nth-child(1) {
+    font-family: var(--heading-font);
+    font-weight: bold;
+    font-size: 40px;
+    color: black;
+}
+
+.faculty-slots-details div {
+    font-family: var(--text-font);
+    margin: 7px 0;
+    font-weight: bold;
+    color: var(--color2);
+}
+
+.faculty-slots-days {
+    display: flex;
+    gap: 50px;
+    font-family: var(--heading-font);
+    font-weight: bold;
+    font-size: 30px;
+    color: var(--color3);
+    margin: 50px 0 0 0;
+    position: relative;
+}
+
+.faculty-slots-days div {
+    cursor: pointer;
+}
+
+.faculty-slots-days div:hover {
+    color: var(--color1) !important;
+}
+
+#day-slider {
+    position: absolute;
+    bottom: 0;
+    height: 4px;
+    background-color: var(--color1);
+    transition: 0.3s ease-out;
+    z-index: -10;
+    border-radius: 5px;
+    margin: -10px 0;
+}
+
+.faculty-slots {
+    margin: 50px 0;
+    margin-bottom: 30px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.faculty-slots div {
+    padding: 10px 30px;
+    font-size: 30px;
+    font-family: var(--heading-font);
+    font-weight: bold;
+    border: 3px solid var(--color4);
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.faculty-slots div:hover {
+    background-color: var(--color4);
+}
+
+.am-pm {
+    font-size: 20px;
+    color: var(--color2);
+}
+
+.make-avail {
+    font-family: var(--text-font);
+    font-weight: bold;
+    padding: 15px 20px;
+    background-color: var(--color1);
+    color: var(--color5);
+    border-radius: 7px;
+    align-self: flex-end;
+    border: 2px solid var(--color1);
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.make-avail:hover {
+    background-color: white;
+    color: var(--color1);
+}
+
+.make-active {
+    all: unset;
+    background-color: var(--active);
+    color: var(--color5);
+    cursor: not-allowed;
+}
+
+.make-active span {
+    color: var(--color5);
+}
+
+.edit-icon {
+    margin: -5px 0;
+    border-radius: 20px;
+    padding: 3px;
+    background-color: var(--color4);
+    color: black;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.edit-icon:hover{
+    background-color: var(--color3);
+}
+
+.edit-input{
+    font-size: 15px;
+    border: 2px solid var(--color4);
+    color: var(--color1);
+    border-radius: 10px;
+    font-weight: bold;
+    font-family: var(--text-font);
+    padding: 10px;
+    width: 300px;
+}
+
+@media (max-width: 900px) and (min-width: 561px) {
+    .faculty-slots-container {
+        margin: 180px 0 0 0;
+    }
+
+    .faculty-slots-days {
+        gap: 15px;
+        font-size: 25px;
+    }
+
+    .faculty-slots {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 560px) {
+    .faculty-slots-container {
+        margin: 150px 0 0 0;
+    }
+
+    .faculty-slots-image-details {
+        gap: 0px;
+    }
+
+    .faculty-slots-image {
+        padding: 10px;
+        height: 150px;
+    }
+
+    .faculty-slots-details div:nth-child(1) {
+        font-size: 30px;
+    }
+
+    .faculty-slots-details div {
+        font-family: var(--text-font);
+        margin: 7px 0;
+        font-weight: bold;
+        font-size: 13px;
+    }
+
+    .faculty-slots-days {
+        gap: 10px;
+        font-size: 17px;
+        margin: 30px 0 0 0;
+    }
+
+    .faculty-slots {
+        display: grid;
+        /* flex-wrap: wrap; */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    #day-slider {
+        position: absolute;
+        bottom: 0;
+        height: 3px;
+        background-color: var(--color1);
+        transition: 0.3s ease-out;
+        z-index: -10;
+        border-radius: 5px;
+        margin: -10px 0;
+    }
+}

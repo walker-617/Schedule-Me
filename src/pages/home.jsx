@@ -1,15 +1,43 @@
 import './home.css'
 import { FcGoogle } from "react-icons/fc";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { useNavigate } from "react-router-dom"
 
 function Home() {
 
-  function handleStudent(){
-    window.location.href="/student";
-  }
+  const navigate = useNavigate();
 
-  function handleFaculty(){
-    window.location.href="/faculty";
-  }
+  function handleSignIn(route) {
+    signInWithPopup(getAuth(), new GoogleAuthProvider())
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        const email = user.email;
+        if (route === "student") {
+          navigate("/student");
+        }
+        else {
+          const docRef = doc(db, "faculty", email);
+          getDoc(docRef)
+            .then((res) => {
+              if (res.exists()) {
+                navigate("/faculty");
+              }
+              else {
+                navigate("/fill_details");
+              }
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              console.log("error occured in home page");
+            });
+        }
+      }
+    )}
 
   return (
     <div className="home-container">
@@ -21,13 +49,13 @@ function Home() {
         <p>Login as</p>
         <br />
         <p>Student</p>
-        <div className="google-logo" onClick={handleStudent}>
+        <div className="google-logo" onClick={() => handleSignIn("student")}>
           Sign in with <FcGoogle className="g" />
           oogle
         </div>
         <br />
         <p>Faculty</p>
-        <div className="google-logo" onClick={handleFaculty}>
+        <div className="google-logo" onClick={() => handleSignIn("faculty")}>
           Sign in with <FcGoogle className="g" />
           oogle
         </div>

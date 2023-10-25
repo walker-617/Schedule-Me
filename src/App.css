@@ -6,12 +6,20 @@
   --color3: rgb(173, 181, 189);
   --color4: rgb(222, 226, 230);
   --color5: rgb(248, 249, 250);
+  --active: rgb(58, 152, 108);
+  --cancelled: rgb(208, 0, 0);
+  --waiting-list: rgb(30, 96, 145);
   --heading-font: 'Outfit', sans-serif;
   --text-font: 'Comfortaa', cursive;
   --small-shadow: 0px 0px 10px var(--color4);
+  --big-shadow: 0px 0px 15px var(--color3);
 }
 
 p{
   margin: 0;
   padding: 0;
+}
+
+body::-webkit-scrollbar{
+  display: none;
 }

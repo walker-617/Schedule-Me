@@ -1,0 +1,56 @@
+.student-faculties-container{
+    margin: 130px 0 0 0;
+}
+
+.student-faculties{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 0 0 20px 0;
+}
+
+.faculty{
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    flex-wrap: wrap;
+    padding: 10px 50px;
+    border: 1px solid var(--color4);
+    border-radius: 10px;
+    box-shadow: var(--small-shadow);
+    cursor: pointer;
+}
+
+.faculty:hover{
+    box-shadow: var(--big-shadow);
+    /* border: none; */
+}
+
+.faculty div{
+    font-family: var(--heading-font);
+    font-weight: bold;
+    margin: 10px;
+    font-size: 20px;
+}
+
+.faculty img{
+    height: 150px;
+    border-radius: 100px;
+    /* box-shadow: var(--big-shadow); */
+}
+
+.faculty-slot{
+    position: relative;
+}
+
+.waiting-tag{
+    color: var(--waiting-list);
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 13px;
+}

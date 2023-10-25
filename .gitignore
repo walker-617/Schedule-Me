@@ -4,6 +4,9 @@
 /node_modules
 /.pnp
 .pnp.js
+.gitignore
+README.md
+src/config.js
 
 # testing
 /coverage
