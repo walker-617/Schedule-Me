@@ -157,12 +157,33 @@
     }
 
     .faculty-slots {
-        display: flex;
-        flex-wrap: wrap;
+        grid-template-columns: repeat(3,1fr);
+        margin: 30px 10px;
+    }
+
+    .faculty-slots-image {
+        padding: 10px;
+        height: 150px;
+    }
+
+    .faculty-slots-details div:nth-child(1) {
+        font-size: 25px;
     }
 }
 
 @media (max-width: 560px) {
+
+    .faculty-slots div {
+        padding: 10px 20px;
+        font-size: 20px;
+        font-family: var(--heading-font);
+        font-weight: bold;
+        border: 3px solid var(--color4);
+        text-align: center;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
     .faculty-slots-container {
         margin: 150px 0 0 0;
     }
@@ -173,11 +194,11 @@
 
     .faculty-slots-image {
         padding: 10px;
-        height: 150px;
+        height: 100px;
     }
 
     .faculty-slots-details div:nth-child(1) {
-        font-size: 30px;
+        font-size: 20px;
     }
 
     .faculty-slots-details div {
@@ -195,9 +216,12 @@
 
     .faculty-slots {
         display: grid;
-        /* flex-wrap: wrap; */
-        grid-template-columns: repeat(2, 1fr);
-        gap: 25px;
+        grid-auto-flow:row;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        justify-content: center;
+        align-content:space-between;
+        margin: 30px 10px;
     }
 
     #day-slider {

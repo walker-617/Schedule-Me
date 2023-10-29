@@ -30,9 +30,17 @@ function Studentnavbar() {
 
     useEffect(()=>{
         getAuth().onAuthStateChanged((user)=>{
-            setImage(user.photoURL);
+            if(!user)
+            {
+                navigate("/");
+            }
+            else
+            {
+                setImage(user.photoURL);
+            }
+            
         })
-    })
+    },[])
 
     return (
         <>

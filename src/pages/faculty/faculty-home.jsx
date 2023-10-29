@@ -7,8 +7,19 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import "./faculty-home.css"
 import { arrayRemove, collection, doc, getDoc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 function FacultyHome() {
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        getAuth().onAuthStateChanged((user) => {
+            if (user && !user.email.endsWith("@nitc.ac.in")) {
+                navigate("/unauth_access");
+            }
+        })
+    }, []);
 
     const viewCard = (day, slot) => {
         onSnapshot(doc(db, "faculty_slots", getAuth().currentUser.email, day, "active_times"), (doc) => {
@@ -42,23 +53,27 @@ function FacultyHome() {
         popupBackground.style.visibility = "hidden";
         popup.style.visibility = "hidden";
         const time = (slot.time.split(' ')[0]).toString();
-        const email = getAuth().currentUser.email;
-        updateDoc(doc(db, "faculty_slots", email, day, time), {
+        const user = getAuth().currentUser;
+        updateDoc(doc(db, "faculty_slots", user.email, day, time), {
             status: "Cancelled",
         }, { merge: true });
-        waiting.splice(activeTimes.indexOf(time),1);
-        updateDoc(doc(db, "faculty_slots", email, day, "active_times"), {
+        waiting.splice(activeTimes.indexOf(time), 1);
+        updateDoc(doc(db, "faculty_slots", user.email, day, "active_times"), {
             slots: arrayRemove(time),
             waiting: waiting
         }, { merge: true });
-        for (const student_email of slot.student_emails) {
-            updateDoc(doc(db, "students_slots", student_email, day, time), {
+        for (const student of slot.students) {
+            updateDoc(doc(db, "students_slots", student.email, day, time), {
                 status: 'Cancelled',
             }, { merge: true });
-            updateDoc(doc(db, "students_slots", student_email, day, "active_times"), {
-                faculty: arrayRemove(email),
+            updateDoc(doc(db, "students_slots", student.email, day, "active_times"), {
+                faculty: arrayRemove(user.email),
                 slots: arrayRemove(time)
-            }, { merge: true })
+            }, { merge: true });
+            fetch(`http://localhost:5000/faculty_slot_cancel_mail?t_name=${user.displayName}&s_email=${student.email}&day=${day}&time=${slot.time}&t_email=${user.email}&t_img=${user.photoURL}`, {
+                mode: 'no-cors',
+                method: "post",
+            });
         }
     }
 
@@ -77,30 +92,36 @@ function FacultyHome() {
 
     useEffect(() => {
         getAuth().onAuthStateChanged((user) => {
-            for (const day of days) {
-                onSnapshot(collection(db, "faculty_slots", user.email, day), (res) => {
-                    const docs = res.docs;
-                    const x = [];
-                    const desiredOrder = ["8", "9", "10", "11", "1", "2", "3", "4"];
-                    docs.sort((a, b) => {
-                        const indexA = desiredOrder.indexOf(a.id);
-                        const indexB = desiredOrder.indexOf(b.id);
-                        if (indexA < indexB) {
-                            return -1;
-                        } else if (indexA > indexB) {
-                            return 1;
-                        } else {
-                            return 0;
-                        }
-                    });
+            if (user) {
+                for (const day of days) {
+                    onSnapshot(collection(db, "faculty_slots", user?.email, day), (res) => {
+                        const docs = res.docs;
+                        const x = [];
+                        const desiredOrder = ["8", "9", "10", "11", "1", "2", "3", "4"];
+                        docs.sort((a, b) => {
+                            const indexA = desiredOrder.indexOf(a.id);
+                            const indexB = desiredOrder.indexOf(b.id);
+                            if (indexA < indexB) {
+                                return -1;
+                            } else if (indexA > indexB) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        });
 
-                    for (const doc of docs) {
-                        if (doc.id !== "active_times") {
-                            x.push({ time: (doc.id + " - " + (+doc.id + 1).toString() + (doc.id < 8 ? " pm" : " am")), student_emails: doc.data().emails, student_images: doc.data().imageURLs, student_names: doc.data().names, status: doc.data().status })
+                        for (const doc of docs) {
+                            if (doc.id !== "active_times") {
+                                x.push({ time: (doc.id + " - " + (+doc.id + 1).toString() + (doc.id < 8 ? " pm" : " am")), status: doc.data().status, students: doc.data().students })
+                            }
                         }
-                    }
-                    day === "Monday" ? setMonday(x) : day === "Tuesday" ? setTuesday(x) : day === "Wednesday" ? setWednesday(x) : day === "Thursday" ? setThursday(x) : setFriday(x);
-                })
+                        day === "Monday" ? setMonday(x) : day === "Tuesday" ? setTuesday(x) : day === "Wednesday" ? setWednesday(x) : day === "Thursday" ? setThursday(x) : setFriday(x);
+                    })
+                }
+            }
+            else
+            {
+                navigate("/unauth_access");
             }
         })
     }, [])
@@ -122,8 +143,8 @@ function FacultyHome() {
                                             <div className={slot.status}>{slot.status}</div>
                                         </div>
                                         <div className="faculty-student-images">
-                                            {slot.student_images.length ? slot.student_images.map((src, i) => (
-                                                i<4?<img src={src} alt="student" className={slot.student_images.length > 1 ? "faculty-student-image" : ""} />:""
+                                            {slot.students?.length ? slot.students.map((student, i) => (
+                                                i < 4 ? <img src={student.imageURL} alt="student" className={slot.students.length > 1 ? "faculty-student-image" : ""} /> : ""
                                             )) : <img src={user_image} style={{ opacity: "0.5" }} alt="student" />}
                                         </div>
                                     </div>
@@ -140,9 +161,9 @@ function FacultyHome() {
                                                 <div className={slot.status}>{slot.status}</div>
                                             </div>
                                             <div className="faculty-student-images">
-                                                    {slot.student_images.length ? slot.student_images.map((src, i) => (
-                                                        i<4?<img src={src} alt="student" className={slot.student_images.length>1?"faculty-student-image":""}/>:""
-                                                    )) : <img src={user_image} style={{ opacity: "0.5" }} alt="student" />}
+                                                {slot.students?.length ? slot.students.map((student, i) => (
+                                                    i < 4 ? <img src={student.imageURL} alt="student" className={slot.students.length > 1 ? "faculty-student-image" : ""} /> : ""
+                                                )) : <img src={user_image} style={{ opacity: "0.5" }} alt="student" />}
                                             </div>
                                         </div>
                                     )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /><Loading /><Loading /></>}</div> :
@@ -157,9 +178,9 @@ function FacultyHome() {
                                                     <div className={slot.status}>{slot.status}</div>
                                                 </div>
                                                 <div className="faculty-student-images">
-                                                        {slot.student_images.length ? slot.student_images.map((src, i) => (
-                                                            i<4?<img src={src} alt="student" className={slot.student_images.length>1?"faculty-student-image":""}/>:""
-                                                        )) : <img src={user_image} style={{ opacity: "0.5" }} alt="student" />}
+                                                    {slot.students?.length ? slot.students.map((student, i) => (
+                                                        i < 4 ? <img src={student.imageURL} alt="student" className={slot.students.length > 1 ? "faculty-student-image" : ""} /> : ""
+                                                    )) : <img src={user_image} style={{ opacity: "0.5" }} alt="student" />}
                                                 </div>
                                             </div>
                                         )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /><Loading /></>} </div> :
@@ -174,10 +195,10 @@ function FacultyHome() {
                                                         <div className={slot.status}>{slot.status}</div>
                                                     </div>
                                                     <div className="faculty-student-images">
-                                                            {slot.student_images.length ? slot.student_images.map((src, i) => (
-                                                                i<4?<img src={src} alt="student" className={slot.student_images.length>1?"faculty-student-image":""}/>:""
-                                                            )) : <img src={user_image} style={{ opacity: "0.5" }} alt="student" />}
-]                                                    </div>
+                                                        {slot.students?.length ? slot.students.map((student, i) => (
+                                                            i < 4 ? <img src={student.imageURL} alt="student" className={slot.students.length > 1 ? "faculty-student-image" : ""} /> : ""
+                                                        )) : <img src={user_image} style={{ opacity: "0.5" }} alt="student" />}
+                                                    </div>
                                                 </div>
                                             )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /><Loading /><Loading /></>} </div> :
                                         <div className="student-faculty-cards">
@@ -190,9 +211,9 @@ function FacultyHome() {
                                                         <div className={slot.status}>{slot.status}</div>
                                                     </div>
                                                     <div className="faculty-student-images">
-                                                            {slot.student_images.length ? slot.student_images.map((src, i) => (
-                                                                i<4?<img src={src} alt="student" className={slot.student_images.length>1?"faculty-student-image":""}/>:""
-                                                            )) : <img src={user_image} style={{ opacity: "0.5" }} alt="student" />}
+                                                        {slot.students?.length ? slot.students.map((student, i) => (
+                                                            i < 4 ? <img src={student.imageURL} alt="student" className={slot.students.length > 1 ? "faculty-student-image" : ""} /> : ""
+                                                        )) : <img src={user_image} style={{ opacity: "0.5" }} alt="student" />}
                                                     </div>
                                                 </div>
                                             )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /></>}</div>}
@@ -210,18 +231,20 @@ function FacultyHome() {
                         <div style={{ marginTop: "20px", fontSize: "20px" }}> Students</div>
                     </div>
                     <div className="faculty-students-list">
-                        {slot.student_names && slot.student_names.length ? slot.student_names.map((name, i) => (
+                        {slot.students?.length ? slot.students.map((student, i) => (
                             i < 4 ? <div className="faculty-student">
                                 <div>
-                                    <div>{name}</div>
-                                    <div>{slot.student_emails[i]}</div>
+                                    <div>{student.name}</div>
+                                    <div>{student.email}</div>
+                                    <div>reason</div>
+                                    <div>{student.reason}</div>
                                 </div>
                                 <img
-                                    src={slot.student_images[i]}
+                                    src={student.imageURL}
                                     alt="faculty"
                                 />
                             </div> : ""
-                        )) : <div style={{ fontWeight: "100", fontSize: "25px" }}>No students made appointments yet</div>}
+                        )) : <div style={{ fontWeight: "100", fontSize: "25px" }}>No appointments yet</div>}
                     </div>
                     {slot.status === "Active" ?
                         <div className="faculty-student-cancel" align="end" onClick={cancelSlot}>Cancel</div> : ""}

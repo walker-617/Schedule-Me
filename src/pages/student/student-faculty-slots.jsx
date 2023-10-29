@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAuth } from "firebase/auth";
 import { arrayUnion, collection, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
@@ -18,6 +18,8 @@ function StudentFacultySlots({ teacher }) {
     const [prev, setPrev] = useState("");
     const [waiting, setWaiting] = useState("");
     const navigate = useNavigate();
+    const reasonRef = useRef();
+    const [reason,setReason]=useState("");
 
     const handleDay = (day__) => {
         const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -84,36 +86,32 @@ function StudentFacultySlots({ teacher }) {
         });
     }, [day, teacher]);
 
-    function toggleSlot(k, n) {
-        if (k == prev) {
-            var x = document.getElementById("time" + k);
-            x.style.backgroundColor = "unset";
-            setPrev("");
-            setSlot("");
-        }
-        else if (prev !== "") {
-            var x = document.getElementById("time" + prev);
-            x.style.backgroundColor = "unset";
-            x = document.getElementById("time" + k);
-            x.style.backgroundColor = "var(--color4)";
-            setPrev(k);
-            setSlot(k);
-        }
-        else {
-            var x = document.getElementById("time" + k);
-            x.style.backgroundColor = "var(--color4)";
-            setPrev(k);
-            setSlot(k);
-        }
+    function popupReason(k, n) {
+        var popupBackground = document.getElementById("popup-background");
+        var popup = document.getElementById("popup");
+        popupBackground.style.visibility = "visible";
+        popup.style.visibility = "visible";
+        setSlot(k);
         setWaiting(n);
     }
 
+    const closePopup = () => {
+        var popupBackground = document.getElementById("popup-background");
+        var popup = document.getElementById("popup");
+        popupBackground.style.visibility = "hidden";
+        popup.style.visibility = "hidden";
+        reasonRef.current.value = "";
+        setReason("");
+    }
+
     function makeAppoint() {
+        const reason = reasonRef.current.value;
         const user = getAuth().currentUser;
         setDoc(doc(db, "students_slots", user.email, day, slot), {
             name: teacher.data().name,
             email: teacher.id,
             imageURL: teacher.data().imageURL,
+            reason: reason,
             status: ("Waiting-list " + waiting)
         }, { merge: true });
         setDoc(doc(db, "students_slots", user.email, day, "active_times"), {
@@ -121,9 +119,7 @@ function StudentFacultySlots({ teacher }) {
             faculty: arrayUnion(teacher.id),
         }, { merge: true });
         setDoc(doc(db, "faculty_slots", teacher.id, day, slot), {
-            emails: arrayUnion(user.email),
-            imageURLs: arrayUnion(user.photoURL),
-            names: arrayUnion(user.displayName)
+            students: arrayUnion({ email: user.email, imageURL: user.photoURL, name: user.displayName, reason: reason }),
         }, { merge: true });
 
         const i = teacherActiveTimes.indexOf(slot);
@@ -133,11 +129,11 @@ function StudentFacultySlots({ teacher }) {
         }, { merge: true })
         var x = document.getElementById("time" + slot);
         x.style.backgroundColor = "unset";
-        setPrev("");
         setSlot("");
+        closePopup();
     }
 
-    return <div align="center">
+    return <div align="center" id="x">
         <div className="faculty-slots-container">
             <div className="faculty-slots-image-details">
                 <img
@@ -167,19 +163,31 @@ function StudentFacultySlots({ teacher }) {
             </div> :
                 <div className="faculty-slots">
                     {["8", "9", "10", "11", "1", "2", "3", "4"].map((time, i) => (
-                        <div className="faculty-slot" key={time} style={studentActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : !teacherActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : {}} onClick={() => !studentActiveTimes.includes(time) ? teacherActiveTimes.includes(time) ? toggleSlot(time, teacherActiveWaiting[teacherActiveTimes.indexOf(time)]) : "" : ""} id={"time" + time}>
+                        <div className="faculty-slot" key={time} style={studentActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : !teacherActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : {}} onClick={() => !studentActiveTimes.includes(time) ? teacherActiveTimes.includes(time) ? popupReason(time, teacherActiveWaiting[teacherActiveTimes.indexOf(time)]) : "" : ""} id={"time" + time}>
                             {time + " - " + (+time + 1).toString()}
                             <span style={studentActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : !teacherActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : {}} className="am-pm">
-                                am
+                                {" "}am
                             </span>
                             <span className="waiting-tag">
-                                {!studentActiveTimes.includes(time) ? teacherActiveTimes.includes(time) && teacherActiveWaiting[teacherActiveTimes.indexOf(time)] > "3" ? "WL - " + (teacherActiveWaiting[teacherActiveTimes.indexOf(time)] - "3") : "" : <img src={studentActiveTimesMap[time].imageURL} alt="faculty" style={{height:"20px",borderRadius:"30px"}}/>}
+                                {!studentActiveTimes.includes(time) ? teacherActiveTimes.includes(time) && teacherActiveWaiting[teacherActiveTimes.indexOf(time)] > "3" ? "WL - " + (teacherActiveWaiting[teacherActiveTimes.indexOf(time)] - "3") : "" : <img src={studentActiveTimesMap[time].imageURL} alt="faculty" style={{ height: "20px", borderRadius: "30px" }} />}
                             </span>
                         </div>
                     ))}
                 </div>
             }
-            {slot ? <div className="make-avail" onClick={() => makeAppoint()}>Make appointment</div> : ""}
+            <div className="popup-background" id="popup-background" onClick={closePopup}></div>
+            <div className="student-faculty-slots-popup" id="popup">
+                <div>You are about to make appointment</div>
+                <div>with</div>
+                <div>{teacher ? teacher.data().name : ""}</div>
+                <div>on</div>
+                <div>{day}</div>
+                <div>at</div>
+                <div>{slot + " - " + (+slot + 1).toString() + (slot < 8 ? " pm" : " am")}</div>
+                <div>Please state the reason below</div>
+                <textarea ref={reasonRef} onChange={(e)=>{setReason(e.target.value)}} placeholder="Reason..." autoFocus={true}></textarea>
+                {reason?<div className="make-appoint" onClick={makeAppoint}>Make appointment</div>:""}
+            </div>
         </div>
     </div>
 }

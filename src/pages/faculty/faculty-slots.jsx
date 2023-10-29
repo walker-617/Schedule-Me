@@ -79,9 +79,7 @@ function FacultySlots() {
         for(const time of slots)
         {
             setDoc(doc(db,"faculty_slots",user.email,day,time),{
-                emails: [],
-                names: [],
-                imageURLs:[],
+                students:[],
                 status: "Active"
             })
             activeSlots.add(time);
@@ -125,11 +123,11 @@ function FacultySlots() {
                         <div>{user.name}</div>
                         <div>{user.email}</div>
                         {!editDepartment?
-                        <div>{user.department} <FiEdit3 className="edit-icon" onClick={()=>setEditDepartment(true)}/></div>:
-                        <div><input value={department} onChange={(e)=>setDepartment(e.target.value)} className="edit-input" type="text"  placeholder="Enter department..." /> {user.department!==department.trim()?<FaCheck style={{color:"var(--color5)",backgroundColor:"var(--active)"}} className="edit-icon"  onClick={handleDepartment}/>:""} <RxCross1 style={{color:"var(--color5)",backgroundColor:"var(--cancelled)"}} className="edit-icon"  onClick={()=>setEditDepartment(false)}/></div>}       
+                        <div>{user.department} <FiEdit3 className="edit-icon" onClick={()=>{setEditDepartment(true);setDepartment(user.department)}}/></div>:
+                        <div><input value={department} onChange={(e)=>setDepartment(e.target.value)} className="edit-input" type="text"  placeholder="Enter department..." /> {user.department!==department.trim() && department?<FaCheck style={{color:"var(--color5)",backgroundColor:"var(--active)"}} className="edit-icon"  onClick={handleDepartment}/>:""} <RxCross1 style={{color:"var(--color5)",backgroundColor:"var(--cancelled)"}} className="edit-icon"  onClick={()=>setEditDepartment(false)}/></div>}       
                         {!editCourses?
-                        <div>{user.courses} <FiEdit3 className="edit-icon" onClick={()=>setEditCourses(true)}/></div>:
-                        <div><input value={courses} onChange={(e)=>setCourses(e.target.value)} className="edit-input" type="text"  placeholder="Enter department..."  /> {user.courses!==courses.trim()?<FaCheck style={{color:"var(--color5)",backgroundColor:"var(--active)"}} className="edit-icon"  onClick={handleCourses}/>:""} <RxCross1 style={{color:"var(--color5)",backgroundColor:"var(--cancelled)"}} className="edit-icon"  onClick={()=>setEditCourses(false)}/></div>}       
+                        <div>{user.courses} <FiEdit3 className="edit-icon" onClick={()=>{setEditCourses(true);setCourses(user.courses)}}/></div>:
+                        <div><input value={courses} onChange={(e)=>setCourses(e.target.value)} className="edit-input" type="text"  placeholder="Enter department..."  /> {user.courses!==courses.trim() && courses?<FaCheck style={{color:"var(--color5)",backgroundColor:"var(--active)"}} className="edit-icon"  onClick={handleCourses}/>:""} <RxCross1 style={{color:"var(--color5)",backgroundColor:"var(--cancelled)"}} className="edit-icon"  onClick={()=>setEditCourses(false)}/></div>}       
                         </>:<>
                         <div style={{ height: "30px", width: "400px", backgroundColor: "var(--color4)", borderRadius: "10px" }}></div>
                         <div style={{ height: "20px", width: "300px", backgroundColor: "var(--color4)", borderRadius: "5px" }}></div>

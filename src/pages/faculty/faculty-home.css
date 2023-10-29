@@ -35,7 +35,7 @@
 
 .faculty-student-popup{
     position: fixed;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%,-50%);
     z-index: 10;
@@ -62,7 +62,7 @@
 
 .faculty-students-list{
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr;
 }
 
 .faculty-student{
@@ -107,6 +107,21 @@
     font-size: 12px;
 }
 
+.faculty-student div div:nth-child(3){
+    margin-top: 10px;
+    color: var(--color3);
+    font-family: var(--text-font);
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.faculty-student div div:nth-child(4){
+    color: var(--color1);
+    font-family: var(--heading-font);
+    font-weight: 200 !important;
+    font-size: 14px;
+}
+
 .faculty-student img{
     height: 100px;
     border-radius: 50px;
@@ -135,22 +150,30 @@
 
 
 @media (max-width: 900px){
-    .faculty-students-list{
-        display: flex;
-        flex-wrap: wrap;
+
+    .faculty-student{
+        padding: 10px;
     }
 
-    .faculty-student img{
-        display: none;
-    }
-    .faculty-student{
+    .faculty-students-list{
         display: flex;
-        width: 100%;
-        justify-content: start;
-        padding: 10px;
+        overflow: scroll;
+        width: 80vw;
     }
 }
 
 @media (max-width: 560px){
-    
+
+    .profile{
+        margin: 5px;
+        height: 30px;
+        width: 30px;
+        border: 2px solid var(--color3);
+    }
+
+    .faculty-students-list{
+        display: flex;
+        overflow: scroll;
+        width: 80vw;
+    }
 }

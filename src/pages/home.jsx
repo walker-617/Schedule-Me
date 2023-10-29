@@ -3,11 +3,23 @@ import { FcGoogle } from "react-icons/fc";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function Home() {
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // getAuth().onAuthStateChanged((user) => {
+    //   if (user) {
+    //     if (user.email.endsWith("@nitc.ac.in")) {
+    //       navigate("/faculty");
+    //     } else {
+    //       navigate("/student");
+    //     }
+    //   }
+    // });
+  }, []);
 
   function handleSignIn(route) {
     signInWithPopup(getAuth(), new GoogleAuthProvider())
@@ -20,24 +32,30 @@ function Home() {
           navigate("/student");
         }
         else {
-          const docRef = doc(db, "faculty", email);
-          getDoc(docRef)
-            .then((res) => {
-              if (res.exists()) {
-                navigate("/faculty");
-              }
-              else {
-                navigate("/fill_details");
-              }
-            })
-            .catch((error) => {
-              const errorCode = error.code;
-              const errorMessage = error.message;
-              console.log("error occured in home page");
-            });
+          if (email.endsWith("@nitc.ac.in")) {
+            const docRef = doc(db, "faculty", email);
+            getDoc(docRef)
+              .then((res) => {
+                if (res.exists()) {
+                  navigate("/faculty");
+                }
+                else {
+                  navigate("/fill_details");
+                }
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log("error occured in home page");
+              });
+          }
+          else{
+            navigate("/unauth_access");
+          }
         }
       }
-    )}
+      )
+  }
 
   return (
     <div className="home-container">

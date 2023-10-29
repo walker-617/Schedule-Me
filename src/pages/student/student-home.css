@@ -204,14 +204,15 @@
     margin-bottom: 10px;
 }
 
-.student-faculty-popup-details div:nth-child(2), .student-faculty-popup-details div:nth-child(10), .student-faculty-popup-details div:nth-child(12){
+.student-faculty-popup-details div:nth-child(2), .student-faculty-popup-details div:nth-child(10), .student-faculty-popup-details div:nth-child(14){
     font-weight: bold;
     font-size: 25px;
 }
 
 .student-faculty-popup-image{
-    height: 200px;
+    height: 150px;
     border-radius: 150px;
+    margin-left: 20px;
 }
 
 .student-faculty-cancel{
@@ -254,6 +255,13 @@
     .student-faculty{
         margin: 0 20px;
     }
+
+    /* .student-faculty-popup{
+        width: 60vw;
+        padding: 20px;
+        flex-wrap: wrap-reverse;
+        justify-content: center;
+    } */
 }
 
 @media (max-width: 560px){
@@ -266,7 +274,7 @@
     }
 
     .student-faculty-popup{
-        width: 80%;
+        width: 70vw;
         padding: 20px;
         flex-wrap: wrap-reverse;
         justify-content: center;

@@ -23,6 +23,7 @@
     border-radius: 10px;
     box-shadow: var(--small-shadow);
     cursor: pointer;
+    text-align: center;
 }
 
 .faculty:hover{
@@ -53,4 +54,105 @@
     top: 5px;
     right: 5px;
     font-size: 13px;
+}
+
+.student-faculty-slots-popup{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 10;
+    background-color: var(--color5);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    visibility: hidden;
+}
+
+.student-faculty-slots-popup  div:nth-child(odd){
+    font-family: var(--heading-font);
+    font-weight: bold;
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+.student-faculty-slots-popup  div:nth-child(even){
+    font-family: var(--text-font);
+    font-weight: bold;
+    color: var(--color3);
+}
+
+.student-faculty-slots-popup  div:nth-child(1){
+    font-family: var(--text-font);
+    color: var(--color2);
+    font-size: 15px;
+}
+
+.student-faculty-slots-popup textarea{
+    border-radius: 10px;
+    margin-top: 5px;
+    padding: 10px;
+    font-family: var(--heading-font);
+    font-size: 20px;
+    width: 500px;
+    height: 100px;
+    border: 3px solid var(--color3);
+}
+
+.make-appoint {
+    font-family: var(--text-font);
+    font-weight: unset !important;
+    padding: 10px 15px;
+    background-color: var(--color1);
+    color: var(--color5) !important;
+    border-radius: 7px;
+    align-self: flex-end;
+    border: 2px solid var(--color1);
+    cursor: pointer;
+    font-size: 13px;
+    margin: 10px;
+}
+
+.make-appoint:hover {
+    background-color: white;
+    font-weight: bold  !important;
+    color: var(--color1) !important;
+}
+
+.placeholder-error::placeholder{
+    color: var(--cancelled);
+}
+
+@media (max-width: 800px) {
+
+    .student-faculties{
+        margin-top: 150px;
+    }
+
+    .student-faculty-slots-popup{
+        border-radius: 10px;
+        padding: 15px;
+        width: 80%;
+    }
+
+    .student-faculty-slots-popup textarea{
+        border-radius: 10px;
+        margin-top: 5px;
+        padding: 10px;
+        font-family: var(--heading-font);
+        font-size: 20px;
+        width: 90%;
+        height: 100px;
+        border: 3px solid var(--color3);
+    }
+
+    .student-faculty-slots-popup  div:nth-child(odd){
+        font-family: var(--heading-font);
+        font-weight: bold;
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
 }

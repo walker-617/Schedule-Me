@@ -5,8 +5,13 @@ import { RiCloseFill } from "react-icons/ri";
 import { db } from "../../firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+import { FiEdit3 } from "react-icons/fi";
+import { FaCheck } from "react-icons/fa6";
+import { RxCross1 } from "react-icons/rx";
+
 import "./student-home.css"
-import { arrayRemove, collection, doc, getDoc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
+import { arrayRemove, collection, doc, getDoc, getDocs, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 function StudentHome() {
 
@@ -17,6 +22,7 @@ function StudentHome() {
       data.day = day;
       data.time = slot.time;
       data.status = slot.status;
+      data.reason = slot.reason;
       setSlot(data);
       onSnapshot(collection(db, "faculty_slots", slot.teacher_email, day), (res) => {
         const docs = res.docs;
@@ -27,7 +33,7 @@ function StudentHome() {
             setTeacherActiveWaiting(data ? data.waiting : []);
           }
           else if (doc.id === slot.time.split(' ')[0]) {
-            setSlotEmails(data.emails);
+            setSlotStudents(data.students);
           }
         }
       })
@@ -48,6 +54,7 @@ function StudentHome() {
     studentFaculty.style.filter = "unset";
     popupBackground.style.visibility = "hidden";
     popup.style.visibility = "hidden";
+    setEditReason(false);
   }
 
   const cancelSlot = () => {
@@ -64,23 +71,29 @@ function StudentHome() {
       faculty: arrayRemove(slot.email)
     }, { merge: true });
 
+    var students = slotStudents;
+    students = students.filter((item) => item.email !== user.email);
     updateDoc(doc(db, "faculty_slots", slot.email, day, slot.time.split(' ')[0]), {
-      emails: arrayRemove(user.email),
-      names: arrayRemove(user.displayName),
-      imageURLs: arrayRemove(user.photoURL)
+      students: students,
     }, { merge: true });
 
     var count = 0;
-    for (const email of slotEmails) {
-      if (email !== user.email) {
-        console.log(email, count);
-        updateDoc(doc(db, "students_slots", email, day, slot.time.split(' ')[0]), {
+    for (const student of slotStudents) {
+      if (student.email !== user.email) {
+        updateDoc(doc(db, "students_slots", student.email, day, slot.time.split(' ')[0]), {
           status: ("Waiting-list " + count)
         }, { merge: true });
+        if (count === 3) {
+          console.table(student.email,slot);
+          fetch(`http://localhost:5000/student_waiting_active_mail?t_name=${slot.name}&t_email=${slot.email}&day=${day}&time=${slot.time}&s_email=${student.email}&t_img=${slot.imageURL}`, {
+            mode: 'no-cors',
+            method: "post",
+          });
+        }
         count++;
       }
       else {
-        updateDoc(doc(db, "students_slots", email, day, slot.time.split(' ')[0]), {
+        updateDoc(doc(db, "students_slots", student.email, day, slot.time.split(' ')[0]), {
           status: "Cancelled",
         }, { merge: true });
       }
@@ -100,17 +113,22 @@ function StudentHome() {
   const [Friday, setFriday] = useState();
   const [teacherActiveWaiting, setTeacherActiveWaiting] = useState([]);
   const [teacherActiveTimes, setTeacherActiveTimes] = useState([]);
-  const [slotEmails, setSlotEmails] = useState([]);
+  const [slotStudents, setSlotStudents] = useState([]);
+  const [editReason, setEditReason] = useState(false);
+  const [reason, setReason] = useState("");
 
   const [day, setDay] = useState("");
   const [slot, setSlot] = useState({});
+
+  const navigate=useNavigate();
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
-      for (const day of days) {
-        onSnapshot(collection(db, "students_slots", user.email, day), (res) => {
+      if(user){
+        for (const day of days) {
+        onSnapshot(collection(db, "students_slots", user?.email, day), (res) => {
           const docs = res.docs;
           const x = [];
           const desiredOrder = ["8", "9", "10", "11", "1", "2", "3", "4"];
@@ -127,15 +145,37 @@ function StudentHome() {
           });
           for (const doc of docs) {
             if (doc.id !== "active_times") {
-              x.push({ time: (doc.id + " - " + (+doc.id + 1).toString() + (doc.id < 8 ? " pm" : " am")), teacher_email: doc.data().email, teacher_image: doc.data().imageURL, teacher_name: doc.data().name, status: doc.data().status })
+              x.push({ time: (doc.id + " - " + (+doc.id + 1).toString() + (doc.id < 8 ? " pm" : " am")), teacher_email: doc.data().email, teacher_image: doc.data().imageURL, teacher_name: doc.data().name, status: doc.data().status, reason: doc.data().reason })
             }
           }
           day === "Monday" ? setMonday(x) : day === "Tuesday" ? setTuesday(x) : day === "Wednesday" ? setWednesday(x) : day === "Thursday" ? setThursday(x) : setFriday(x);
         })
       }
+      }
+      else{
+        navigate("/unauth_access");
+      }
     })
 
-  }, [])
+  }, []);
+
+  function handleReason() {
+    getDoc(doc(db, "faculty_slots", slot.email, day, slot.time.split(' ')[0])).then((res) => {
+      var students = res.data().students;
+      students[slot.status.split(" ")[1]].reason = reason;
+      updateDoc(doc(db, "faculty_slots", slot.email, day, slot.time.split(' ')[0]), {
+        students: students
+      }, { merge: true })
+    })
+    updateDoc(doc(db, "students_slots", getAuth().currentUser.email, day, slot.time.split(' ')[0]), {
+      reason: reason
+    }, { merge: true })
+    setEditReason(false);
+    setReason(reason);
+    slot.reason = reason;
+    setSlot(slot);
+  }
+
 
   return (
     <div className="student-home-container">
@@ -144,9 +184,9 @@ function StudentHome() {
           <div key={day}>{day}</div>
           {
             day === "Monday" ?
-              <div className="student-faculty-cards">
+              <div key={day+"slots"} className="student-faculty-cards">
                 {Monday ? (Monday.length ? Monday.map((slot, i) => (
-                  <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                  <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                     <div className="student-faculty-card-details">
                       <div>name</div>
                       <div>{slot.teacher_name}</div>
@@ -166,9 +206,9 @@ function StudentHome() {
                 )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /></>}
               </div> :
               day === "Tuesday" ?
-                <div className="student-faculty-cards">
+                <div key={day+"slots"} className="student-faculty-cards">
                   {Tuesday ? (Tuesday.length ? Tuesday.map((slot, i) => (
-                    <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                    <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                       <div className="student-faculty-card-details">
                         <div>name</div>
                         <div>{slot.teacher_name}</div>
@@ -187,9 +227,9 @@ function StudentHome() {
                     </div>
                   )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /><Loading /><Loading /></>}</div> :
                 day === "Wednesday" ?
-                  <div className="student-faculty-cards">
+                  <div key={day+"slots"} className="student-faculty-cards">
                     {Wednesday ? (Wednesday.length ? Wednesday.map((slot, i) => (
-                      <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                      <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                         <div className="student-faculty-card-details">
                           <div>name</div>
                           <div>{slot.teacher_name}</div>
@@ -208,9 +248,9 @@ function StudentHome() {
                       </div>
                     )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /><Loading /></>} </div> :
                   day === "Thursday" ?
-                    <div className="student-faculty-cards">
+                    <div key={day+"slots"} className="student-faculty-cards">
                       {Thursday ? (Thursday.length ? Thursday.map((slot, i) => (
-                        <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                        <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                           <div className="student-faculty-card-details">
                             <div>name</div>
                             <div>{slot.teacher_name}</div>
@@ -228,9 +268,9 @@ function StudentHome() {
                           </div>
                         </div>
                       )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /><Loading /><Loading /></>} </div> :
-                    <div className="student-faculty-cards">
+                    <div key={day+"slots"} className="student-faculty-cards">
                       {Friday ? (Friday.length ? Friday.map((slot, i) => (
-                        <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                        <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                           <div className="student-faculty-card-details">
                             <div>name</div>
                             <div>{slot.teacher_name}</div>
@@ -265,6 +305,10 @@ function StudentHome() {
             <div>{slot.courses}</div>
             <div>scheduled day / time</div>
             <div>{slot.day}, {slot.time}</div>
+            <div>reason</div>
+            {!editReason ?
+              <div>{slot.reason} {slot.status?.split(" ")[0] === "Waiting-list" ? <FiEdit3 className="edit-icon" onClick={() => { setEditReason(true); setReason(slot.reason) }} /> : ""}</div> :
+              <div><textarea value={reason} onChange={(e) => setReason(e.target.value)} className="edit-input" type="text" placeholder="Enter reason..." autoFocus></textarea> {slot.reason !== reason.trim() && reason ? <FaCheck style={{ color: "var(--color5)", backgroundColor: "var(--active)" }} className="edit-icon" onClick={handleReason} /> : ""} <RxCross1 style={{ color: "var(--color5)", backgroundColor: "var(--cancelled)" }} className="edit-icon" onClick={() => setEditReason(false)} /></div>}
             <div>status</div>
             {slot.status?.split(" ")[0] === "Waiting-list" && slot.status?.split(" ")[1] < "4" ?
               <div className="Active">Active</div> :

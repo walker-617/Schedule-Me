@@ -29,7 +29,15 @@ function Facultynavbar() {
 
     useEffect(()=>{
         getAuth().onAuthStateChanged((user)=>{
-            setImage(user.photoURL);
+            if(!user)
+            {
+                navigate("/");
+            }
+            else
+            {
+                setImage(user.photoURL);
+            }
+            
         })
     },[])
 
