@@ -84,8 +84,8 @@ function StudentHome() {
           status: ("Waiting-list " + count)
         }, { merge: true });
         if (count === 3) {
-          console.table(student.email,slot);
-          fetch(`http://localhost:5000/student_waiting_active_mail?t_name=${slot.name}&t_email=${slot.email}&day=${day}&time=${slot.time}&s_email=${student.email}&t_img=${slot.imageURL}`, {
+          console.table(student.email, slot);
+          fetch(`https://schedule-me-server.onrender.com/student_waiting_active_mail?t_name=${slot.name}&t_email=${slot.email}&day=${day}&time=${slot.time}&s_email=${student.email}&t_img=${slot.imageURL}`, {
             mode: 'no-cors',
             method: "post",
           });
@@ -120,39 +120,39 @@ function StudentHome() {
   const [day, setDay] = useState("");
   const [slot, setSlot] = useState({});
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
-      if(user){
+      if (user) {
         for (const day of days) {
-        onSnapshot(collection(db, "students_slots", user?.email, day), (res) => {
-          const docs = res.docs;
-          const x = [];
-          const desiredOrder = ["8", "9", "10", "11", "1", "2", "3", "4"];
-          docs.sort((a, b) => {
-            const indexA = desiredOrder.indexOf(a.id);
-            const indexB = desiredOrder.indexOf(b.id);
-            if (indexA < indexB) {
-              return -1;
-            } else if (indexA > indexB) {
-              return 1;
-            } else {
-              return 0;
+          onSnapshot(collection(db, "students_slots", user?.email, day), (res) => {
+            const docs = res.docs;
+            const x = [];
+            const desiredOrder = ["8", "9", "10", "11", "1", "2", "3", "4"];
+            docs.sort((a, b) => {
+              const indexA = desiredOrder.indexOf(a.id);
+              const indexB = desiredOrder.indexOf(b.id);
+              if (indexA < indexB) {
+                return -1;
+              } else if (indexA > indexB) {
+                return 1;
+              } else {
+                return 0;
+              }
+            });
+            for (const doc of docs) {
+              if (doc.id !== "active_times") {
+                x.push({ time: (doc.id + " - " + (+doc.id + 1).toString() + (doc.id < 8 ? " pm" : " am")), teacher_email: doc.data().email, teacher_image: doc.data().imageURL, teacher_name: doc.data().name, status: doc.data().status, reason: doc.data().reason })
+              }
             }
-          });
-          for (const doc of docs) {
-            if (doc.id !== "active_times") {
-              x.push({ time: (doc.id + " - " + (+doc.id + 1).toString() + (doc.id < 8 ? " pm" : " am")), teacher_email: doc.data().email, teacher_image: doc.data().imageURL, teacher_name: doc.data().name, status: doc.data().status, reason: doc.data().reason })
-            }
-          }
-          day === "Monday" ? setMonday(x) : day === "Tuesday" ? setTuesday(x) : day === "Wednesday" ? setWednesday(x) : day === "Thursday" ? setThursday(x) : setFriday(x);
-        })
+            day === "Monday" ? setMonday(x) : day === "Tuesday" ? setTuesday(x) : day === "Wednesday" ? setWednesday(x) : day === "Thursday" ? setThursday(x) : setFriday(x);
+          })
+        }
       }
-      }
-      else{
+      else {
         navigate("/unauth_access");
       }
     })
@@ -184,9 +184,9 @@ function StudentHome() {
           <div key={day}>{day}</div>
           {
             day === "Monday" ?
-              <div key={day+"slots"} className="student-faculty-cards">
+              <div key={day + "slots"} className="student-faculty-cards">
                 {Monday ? (Monday.length ? Monday.map((slot, i) => (
-                  <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                  <div key={day + slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                     <div className="student-faculty-card-details">
                       <div>name</div>
                       <div>{slot.teacher_name}</div>
@@ -206,9 +206,9 @@ function StudentHome() {
                 )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /></>}
               </div> :
               day === "Tuesday" ?
-                <div key={day+"slots"} className="student-faculty-cards">
+                <div key={day + "slots"} className="student-faculty-cards">
                   {Tuesday ? (Tuesday.length ? Tuesday.map((slot, i) => (
-                    <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                    <div key={day + slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                       <div className="student-faculty-card-details">
                         <div>name</div>
                         <div>{slot.teacher_name}</div>
@@ -227,9 +227,9 @@ function StudentHome() {
                     </div>
                   )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /><Loading /><Loading /></>}</div> :
                 day === "Wednesday" ?
-                  <div key={day+"slots"} className="student-faculty-cards">
+                  <div key={day + "slots"} className="student-faculty-cards">
                     {Wednesday ? (Wednesday.length ? Wednesday.map((slot, i) => (
-                      <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                      <div key={day + slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                         <div className="student-faculty-card-details">
                           <div>name</div>
                           <div>{slot.teacher_name}</div>
@@ -248,9 +248,9 @@ function StudentHome() {
                       </div>
                     )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /><Loading /></>} </div> :
                   day === "Thursday" ?
-                    <div key={day+"slots"} className="student-faculty-cards">
+                    <div key={day + "slots"} className="student-faculty-cards">
                       {Thursday ? (Thursday.length ? Thursday.map((slot, i) => (
-                        <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                        <div key={day + slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                           <div className="student-faculty-card-details">
                             <div>name</div>
                             <div>{slot.teacher_name}</div>
@@ -268,9 +268,9 @@ function StudentHome() {
                           </div>
                         </div>
                       )) : <p style={{ fontSize: "18px", color: "var(--color3)", fontFamily: "var(--text-font)", padding: "0  20px" }}>No schedules made for {day}.</p>) : <><Loading /><Loading /><Loading /><Loading /></>} </div> :
-                    <div key={day+"slots"} className="student-faculty-cards">
+                    <div key={day + "slots"} className="student-faculty-cards">
                       {Friday ? (Friday.length ? Friday.map((slot, i) => (
-                        <div key={day+slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
+                        <div key={day + slot.time} className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                           <div className="student-faculty-card-details">
                             <div>name</div>
                             <div>{slot.teacher_name}</div>

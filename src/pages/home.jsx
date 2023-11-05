@@ -1,4 +1,4 @@
-import './home.css'
+import "./home.css";
 import { FcGoogle } from "react-icons/fc";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -22,39 +22,34 @@ function Home() {
   }, []);
 
   function handleSignIn(route) {
-    signInWithPopup(getAuth(), new GoogleAuthProvider())
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        const user = result.user;
-        const email = user.email;
-        if (route === "student") {
-          navigate("/student");
-        }
-        else {
-          if (email.endsWith("@nitc.ac.in")) {
-            const docRef = doc(db, "faculty", email);
-            getDoc(docRef)
-              .then((res) => {
-                if (res.exists()) {
-                  navigate("/faculty");
-                }
-                else {
-                  navigate("/fill_details");
-                }
-              })
-              .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log("error occured in home page");
-              });
-          }
-          else{
-            navigate("/unauth_access");
-          }
+    signInWithPopup(getAuth(), new GoogleAuthProvider()).then((result) => {
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      const user = result.user;
+      const email = user.email;
+      if (route === "student") {
+        navigate("/student");
+      } else {
+        if (email.endsWith("@nitc.ac.in")) {
+          const docRef = doc(db, "faculty", email);
+          getDoc(docRef)
+            .then((res) => {
+              if (res.exists()) {
+                navigate("/faculty");
+              } else {
+                navigate("/fill_details");
+              }
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              console.log("error occured in home page");
+            });
+        } else {
+          navigate("/unauth_access");
         }
       }
-      )
+    });
   }
 
   return (
@@ -79,17 +74,15 @@ function Home() {
         </div>
       </div>
       <div className="home-page-about">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor,
-        libero in auctor faucibus, purus sapien tincidunt nulla, eget suscipit
-        justo ex in ante. Donec pharetra lacus id justo ultricies, at finibus
-        justo volutpat. Fusce congue, urna in vehicula dapibus, odio lectus
-        mattis risus, nec volutpat ante lorem id arcu. Vivamus id iaculis neque.
-        Proin non orci in felis facilisis consequat. Integer vehicula congue
-        massa, at malesuada ipsum fringilla ut. Sed nec fringilla massa, eget
-        sagittis ex. Vestibulum id quam id justo posuere euismod. Vivamus
-        efficitur, odio vel fringilla vehicula, sapien ex convallis nisl, in
-        auctor felis lorem non sapien. Integer mattis nulla nec risus facilisis
-        feugiat.
+        Welcome to Schedule Me, your all-in-one solution for streamlined
+        appointment scheduling. Our web application offers an array of features
+        designed to simplify your life. With Schedule Me, you can seamlessly
+        manage your appointment slots using our intuitive status tracking
+        system. What sets us apart? We ensure everyone stays informed by sending
+        timely email notifications to students about slot updates. Whether
+        you're a student looking to book a meeting with faculty or an academic
+        professional seeking to streamline your schedule, Schedule Me is here to
+        elevate your appointment experience.
       </div>
     </div>
   );

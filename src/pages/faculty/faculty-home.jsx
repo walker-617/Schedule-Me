@@ -70,7 +70,7 @@ function FacultyHome() {
                 faculty: arrayRemove(user.email),
                 slots: arrayRemove(time)
             }, { merge: true });
-            fetch(`http://localhost:5000/faculty_slot_cancel_mail?t_name=${user.displayName}&s_email=${student.email}&day=${day}&time=${slot.time}&t_email=${user.email}&t_img=${user.photoURL}`, {
+            fetch(`https://schedule-me-server.onrender.com/faculty_slot_cancel_mail?t_name=${user.displayName}&s_email=${student.email}&day=${day}&time=${slot.time}&t_email=${user.email}&t_img=${user.photoURL}`, {
                 mode: 'no-cors',
                 method: "post",
             });
