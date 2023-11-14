@@ -190,7 +190,7 @@ function StudentHome() {
                     <div className="student-faculty-card-details">
                       <div>name</div>
                       <div>{slot.teacher_name}</div>
-                      <div>scheduled day / time</div>
+                      <div>scheduled time</div>
                       <div>{slot.time}</div>
                       <div>status</div>
                       {slot.status.split(" ")[0] === "Waiting-list" && slot.status.split(" ")[1] < "4" ?
@@ -212,7 +212,7 @@ function StudentHome() {
                       <div className="student-faculty-card-details">
                         <div>name</div>
                         <div>{slot.teacher_name}</div>
-                        <div>scheduled day / time</div>
+                        <div>scheduled time</div>
                         <div>{slot.time}</div>
                         <div>status</div>
                         {slot.status.split(" ")[0] === "Waiting-list" && slot.status.split(" ")[1] < "4" ?
@@ -233,7 +233,7 @@ function StudentHome() {
                         <div className="student-faculty-card-details">
                           <div>name</div>
                           <div>{slot.teacher_name}</div>
-                          <div>scheduled day / time</div>
+                          <div>scheduled time</div>
                           <div>{slot.time}</div>
                           <div>status</div>
                           {slot.status.split(" ")[0] === "Waiting-list" && slot.status.split(" ")[1] < "4" ?
@@ -254,7 +254,7 @@ function StudentHome() {
                           <div className="student-faculty-card-details">
                             <div>name</div>
                             <div>{slot.teacher_name}</div>
-                            <div>scheduled day / time</div>
+                            <div>scheduled time</div>
                             <div>{slot.time}</div>
                             <div>status</div>
                             {slot.status.split(" ")[0] === "Waiting-list" && slot.status.split(" ")[1] < "4" ?
@@ -274,7 +274,7 @@ function StudentHome() {
                           <div className="student-faculty-card-details">
                             <div>name</div>
                             <div>{slot.teacher_name}</div>
-                            <div>scheduled day / time</div>
+                            <div>scheduled time</div>
                             <div>{slot.time}</div>
                             <div>status</div>
                             {slot.status.split(" ")[0] === "Waiting-list" && slot.status.split(" ")[1] < "4" ?
