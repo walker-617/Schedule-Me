@@ -158,7 +158,7 @@ function StudentFacultySlots({ teacher }) {
             </div>
             {sameTeacher === 1 ? <div className="faculty-slots">
                 {["8", "9", "10", "11", "1", "2", "3", "4"].map((time, i) => (
-                    <div key={time} style={sameTeacherTime === time ? { backgroundColor: "var(--active)", color: "var(--color5)", cursor: "not-allowed" } : { color: "var(--color4)", cursor: "not-allowed" }} >{time + " - " + (+time + 1).toString()} <span style={sameTeacherTime === time ? { backgroundColor: "var(--active)", color: "var(--color5)", cursor: "not-allowed" } : { color: "var(--color4)", cursor: "not-allowed" }} className="am-pm">am</span></div>
+                    <div key={time} style={sameTeacherTime === time ? { backgroundColor: "var(--active)", color: "var(--color5)", cursor: "not-allowed" } : { color: "var(--color4)", cursor: "not-allowed" }} >{time + " - " + (+time + 1).toString()} <span style={sameTeacherTime === time ? { backgroundColor: "var(--active)", color: "var(--color5)", cursor: "not-allowed" } : { color: "var(--color4)", cursor: "not-allowed" }} className="am-pm">{parseInt(time)<8?"pm":"am"}</span></div>
                 ))}
             </div> :
                 <div className="faculty-slots">
@@ -166,7 +166,7 @@ function StudentFacultySlots({ teacher }) {
                         <div className="faculty-slot" key={time} style={studentActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : !teacherActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : {}} onClick={() => !studentActiveTimes.includes(time) ? teacherActiveTimes.includes(time) ? popupReason(time, teacherActiveWaiting[teacherActiveTimes.indexOf(time)]) : "" : ""} id={"time" + time}>
                             {time + " - " + (+time + 1).toString()}
                             <span style={studentActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : !teacherActiveTimes.includes(time) ? { color: "var(--color4)", cursor: "not-allowed" } : {}} className="am-pm">
-                                {" "}am
+                                {" "}{parseInt(time)<8?"pm":"am"}
                             </span>
                             <span className="waiting-tag">
                                 {!studentActiveTimes.includes(time) ? teacherActiveTimes.includes(time) && teacherActiveWaiting[teacherActiveTimes.indexOf(time)] > "3" ? "WL - " + (teacherActiveWaiting[teacherActiveTimes.indexOf(time)] - "3") : "" : <img src={studentActiveTimesMap[time].imageURL} alt="faculty" style={{ height: "20px", borderRadius: "30px" }} />}
