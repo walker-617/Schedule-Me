@@ -137,7 +137,7 @@ function FacultyHome() {
                                 {Monday ? (Monday.length ? Monday.map((slot, i) => (
                                     <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                                         <div className="student-faculty-card-details">
-                                            <div>scheduled day / time</div>
+                                            <div>scheduled time</div>
                                             <div>{slot.time}</div>
                                             <div>status</div>
                                             <div className={slot.status}>{slot.status}</div>
@@ -155,7 +155,7 @@ function FacultyHome() {
                                     {Tuesday ? (Tuesday.length ? Tuesday.map((slot, i) => (
                                         <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                                             <div className="student-faculty-card-details">
-                                                <div>scheduled day / time</div>
+                                                <div>scheduled time</div>
                                                 <div>{slot.time}</div>
                                                 <div>status</div>
                                                 <div className={slot.status}>{slot.status}</div>
@@ -172,7 +172,7 @@ function FacultyHome() {
                                         {Wednesday ? (Wednesday.length ? Wednesday.map((slot, i) => (
                                             <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                                                 <div className="student-faculty-card-details">
-                                                    <div>scheduled day / time</div>
+                                                    <div>scheduled time</div>
                                                     <div>{slot.time}</div>
                                                     <div>status</div>
                                                     <div className={slot.status}>{slot.status}</div>
@@ -189,7 +189,7 @@ function FacultyHome() {
                                             {Thursday ? (Thursday.length ? Thursday.map((slot, i) => (
                                                 <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                                                     <div className="student-faculty-card-details">
-                                                        <div>scheduled day / time</div>
+                                                        <div>scheduled time</div>
                                                         <div>{slot.time}</div>
                                                         <div>status</div>
                                                         <div className={slot.status}>{slot.status}</div>
@@ -205,7 +205,7 @@ function FacultyHome() {
                                             {Friday ? (Friday.length ? Friday.map((slot, i) => (
                                                 <div className="student-faculty-card" onClick={() => viewCard(day, slot)}>
                                                     <div className="student-faculty-card-details">
-                                                        <div>scheduled day / time</div>
+                                                        <div>scheduled time</div>
                                                         <div>{slot.time}</div>
                                                         <div>status</div>
                                                         <div className={slot.status}>{slot.status}</div>
