@@ -49,7 +49,7 @@ function Facultynavbar() {
                     <Link to="home"><div className='nav-item' id="nav-item0" onClick={() => handleMenu(0)}> <HiHome className="navbar-icon" /> Home </div></Link>
                     <Link to="slots"><div className='nav-item' id="nav-item1" onClick={() => handleMenu(1)}> <BsUiChecksGrid className='navbar-icon' />  Slots</div></Link>
                     <div className='nav-item' id="nav-item2" onClick={() => handleMenu(2)}>  Logout <MdRunCircle className='navbar-icon-logout' /> </div>
-                    <img className='profile' src={image?image:user_image} />
+                    <img className='profile' src={image?image:user_image}  alt="Student"/>
                     <div id="slider"></div>
                 </div>
             </div>
