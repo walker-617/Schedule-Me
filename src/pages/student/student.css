@@ -151,6 +151,60 @@ a{
     border-radius: 5px;
 }
 
+.profile-container{
+    position: relative;
+}
+
+.profile-popup{
+    position: absolute;
+    top: 110%;
+    left: 0;
+    transform: translateX(-90%);
+    background-color: white;
+    box-shadow: 0 0 5px 0px var(--color3);
+    border-radius: 10px;
+    border-left: 10px solid var(--color3);
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    z-index: 100;
+}
+
+.pop-img{
+    height: 60px;
+    width: 60px;
+    border: 4px solid lightblue;
+    border-radius: 100px;
+}
+
+.pop-info :nth-child(1){
+    font-weight: bold;
+}
+
+.pop-info :nth-child(2){
+    font-size: 15px;
+}
+
+.pop-close{
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%,-50%);
+    font-size: 15px;
+    padding: 5px;
+    background-color: var(--color4);
+    color: var(--color1);
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.pop-close:hover{
+    background-color: var(--color3)
+}
+
 @media (max-width: 900px) and (min-width: 561px){
     .student-navbar{
         flex-direction: column;
