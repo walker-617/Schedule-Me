@@ -44,8 +44,8 @@ function Facultynavbar() {
       <div className="student-navbar-title">
         <span>Schedule Me</span>
         <span className="ver_bar"> / </span>
-        <span>Student Portal</span>
-      </div>{" "}
+        <span>Faculty Portal</span>
+      </div>
       <div className="student-navbar-items">
         <Link to="home">
           <div
