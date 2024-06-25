@@ -1,7 +1,3 @@
-.student-home-container{
-    margin: 130px 0 0 0;
-}
-
 .student-faculty{
     margin: 50px 100px;
 }
@@ -247,13 +243,9 @@
     color: var(--color1) !important;
 }
 
-@media (max-width: 900px) and (min-width: 561px){
-    .student-home-container{
-        margin: 200px 0 0 0;
-    }
-    
+@media (max-width: 1000px) and (min-width: 561px){
     .student-faculty{
-        margin: 0 20px;
+        margin: 50px 30px;
     }
 
     /* .student-faculty-popup{
@@ -265,12 +257,9 @@
 }
 
 @media (max-width: 560px){
-    .student-home-container{
-        margin: 150px 0 0 0;
-    }
 
     .student-faculty{
-        margin: 0 20px;
+        margin: 20px;
     }
 
     .student-faculty-popup{

@@ -1,5 +1,5 @@
 .faculty-slots-container {
-    margin: 130px 0 0 0;
+    margin: 50px 0 0 0;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -146,11 +146,7 @@
     width: 300px;
 }
 
-@media (max-width: 900px) and (min-width: 561px) {
-    .faculty-slots-container {
-        margin: 180px 0 0 0;
-    }
-
+@media (max-width: 1000px) and (min-width: 600px) {
     .faculty-slots-days {
         gap: 15px;
         font-size: 25px;
@@ -171,7 +167,7 @@
     }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 600px) {
 
     .faculty-slots div {
         padding: 10px 20px;
@@ -182,10 +178,6 @@
         text-align: center;
         border-radius: 10px;
         cursor: pointer;
-    }
-
-    .faculty-slots-container {
-        margin: 150px 0 0 0;
     }
 
     .faculty-slots-image-details {

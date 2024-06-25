@@ -41,10 +41,11 @@ function Studentnavbar() {
   }, []);
 
   return (
-    <>
       <div className="student-navbar">
         <div className="student-navbar-title">
-          Schedule Me | <span style={{ fontSize: "25px" }}>Student Portal</span>
+          <span>Schedule Me</span>
+          <span className="ver_bar"> / </span>
+          <span >Student Portal</span>
         </div>
         <div className="student-navbar-items">
           <Link to="home">
@@ -53,8 +54,7 @@ function Studentnavbar() {
               id="nav-item0"
               onClick={() => handleMenu(0)}
             >
-              {" "}
-              <HiHome className="navbar-icon" /> Home{" "}
+              <HiHome className="navbar-icon" /> Home
             </div>
           </Link>
           <Link to="faculty">
@@ -63,8 +63,7 @@ function Studentnavbar() {
               id="nav-item1"
               onClick={() => handleMenu(1)}
             >
-              {" "}
-              <FaUsers className="navbar-icon" /> Faculty{" "}
+              <FaUsers className="navbar-icon" /> Faculty
             </div>
           </Link>
           <div
@@ -72,8 +71,7 @@ function Studentnavbar() {
             id="nav-item2"
             onClick={() => handleMenu(2)}
           >
-            {" "}
-            Logout <MdRunCircle className="navbar-icon-logout" />{" "}
+            Logout <MdRunCircle className="navbar-icon-logout" />
           </div>
           <div className="profile-container">
             <img
@@ -98,7 +96,6 @@ function Studentnavbar() {
           <div id="slider"></div>
         </div>
       </div>
-    </>
   );
 }
 

@@ -1,6 +1,6 @@
-.student-faculties-container{
+/* .student-faculties-container{
     margin: 130px 0 0 0;
-}
+} */
 
 .student-faculties{
     display: flex;
@@ -8,7 +8,7 @@
     justify-content: center;
     align-items: center;
     gap: 40px;
-    margin: 0 0 20px 0;
+    margin: 20px;
 }
 
 .faculty{
@@ -128,9 +128,9 @@
 
 @media (max-width: 800px) {
 
-    .student-faculties{
+    /* .student-faculties{
         margin-top: 150px;
-    }
+    } */
 
     .student-faculty-slots-popup{
         border-radius: 10px;

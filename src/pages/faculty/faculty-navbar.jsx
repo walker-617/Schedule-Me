@@ -40,62 +40,57 @@ function Facultynavbar() {
   }, []);
 
   return (
-    <>
-      <div className="student-navbar">
-        <div className="student-navbar-title">Schedule Me | <span style={{ fontSize: "25px" }}>Faculty Portal</span></div>
-        <div className="student-navbar-items">
-          <Link to="home">
-            <div
-              className="nav-item"
-              id="nav-item0"
-              onClick={() => handleMenu(0)}
-            >
-              {" "}
-              <HiHome className="navbar-icon" /> Home{" "}
-            </div>
-          </Link>
-          <Link to="slots">
-            <div
-              className="nav-item"
-              id="nav-item1"
-              onClick={() => handleMenu(1)}
-            >
-              {" "}
-              <BsUiChecksGrid className="navbar-icon" /> Slots
-            </div>
-          </Link>
+    <div className="student-navbar">
+      <div className="student-navbar-title">
+        <span>Schedule Me</span>
+        <span className="ver_bar"> / </span>
+        <span>Student Portal</span>
+      </div>{" "}
+      <div className="student-navbar-items">
+        <Link to="home">
           <div
             className="nav-item"
-            id="nav-item2"
-            onClick={() => handleMenu(2)}
+            id="nav-item0"
+            onClick={() => handleMenu(0)}
           >
-            {" "}
-            Logout <MdRunCircle className="navbar-icon-logout" />{" "}
+            <HiHome className="navbar-icon" /> Home
           </div>
-          <div className="profile-container">
-            <img
-              className="profile"
-              src={user ? user.photoURL : user_image}
-              onClick={() => setShow(true)}
-            />
-            {show && (
-              <div className="profile-popup">
-                <img
-                  className="pop-img"
-                  src={user ? user.photoURL : user_image}
-                />
-                <div className="pop-info">
-                  <p>{user?.displayName}</p>
-                  <p>{user?.email}</p>
-                </div>
-                <ImCross className="pop-close" onClick={() => setShow(false)} />
-              </div>
-            )}
+        </Link>
+        <Link to="slots">
+          <div
+            className="nav-item"
+            id="nav-item1"
+            onClick={() => handleMenu(1)}
+          >
+            <BsUiChecksGrid className="navbar-icon" /> Slots
           </div>
-          <div id="slider"></div>
+        </Link>
+        <div className="nav-item" id="nav-item2" onClick={() => handleMenu(2)}>
+          Logout <MdRunCircle className="navbar-icon-logout" />
         </div>
+        <div className="profile-container">
+          <img
+            className="profile"
+            src={user ? user.photoURL : user_image}
+            onClick={() => setShow(true)}
+          />
+          {show && (
+            <div className="profile-popup">
+              <img
+                className="pop-img"
+                src={user ? user.photoURL : user_image}
+              />
+              <div className="pop-info">
+                <p>{user?.displayName}</p>
+                <p>{user?.email}</p>
+              </div>
+              <ImCross className="pop-close" onClick={() => setShow(false)} />
+            </div>
+          )}
+        </div>
+        <div id="slider"></div>
       </div>
-    </>
+    </div>
   );
 }
 
